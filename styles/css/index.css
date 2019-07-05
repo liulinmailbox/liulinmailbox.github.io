@@ -1,0 +1,73 @@
+/*
+Error: Invalid GBK character "\xE9"
+        on line 61 of home.scss
+        from line 1 of index.scss
+
+56:       }
+57: 
+58:       &:hover {
+59:         @media screen and (min-width: $main-width + 1px) {
+60:           z-index: 100;
+61:           // 防止内容换行
+62:           padding-left: 80px;
+63:           width: calc(100% + 20px);
+64:         }
+65:       }
+66:     }
+
+Backtrace:
+home.scss:61
+index.scss:1
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/util.rb:1043:in `rescue in block in find_encoding_error'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/util.rb:1040:in `block in find_encoding_error'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/util.rb:1039:in `each'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/util.rb:1039:in `each_with_index'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/util.rb:1039:in `find_encoding_error'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/util.rb:773:in `rescue in check_sass_encoding'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/util.rb:769:in `check_sass_encoding'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/engine.rb:444:in `check_encoding!'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/engine.rb:400:in `_to_tree'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/engine.rb:321:in `to_tree'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/visitors/perform.rb:327:in `block in visit_import'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/stack.rb:88:in `block in with_import'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/stack.rb:135:in `with_frame'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/stack.rb:88:in `with_import'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/visitors/perform.rb:326:in `visit_import'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/visitors/base.rb:36:in `visit'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/visitors/perform.rb:162:in `block in visit'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/stack.rb:79:in `block in with_base'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/stack.rb:135:in `with_frame'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/stack.rb:79:in `with_base'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/visitors/perform.rb:162:in `visit'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/visitors/base.rb:52:in `block in visit_children'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/visitors/base.rb:52:in `map'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/visitors/base.rb:52:in `visit_children'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/visitors/perform.rb:171:in `block in visit_children'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/visitors/perform.rb:183:in `with_environment'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/visitors/perform.rb:170:in `visit_children'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/visitors/base.rb:36:in `block in visit'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/visitors/perform.rb:190:in `visit_root'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/visitors/base.rb:36:in `visit'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/visitors/perform.rb:161:in `visit'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/visitors/perform.rb:10:in `visit'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/root_node.rb:36:in `css_tree'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/tree/root_node.rb:29:in `render_with_sourcemap'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/engine.rb:389:in `_render_with_sourcemap'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/engine.rb:307:in `render_with_sourcemap'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/plugin/compiler.rb:462:in `update_stylesheet'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/plugin/compiler.rb:209:in `each'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/plugin/compiler.rb:209:in `update_stylesheets'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/plugin.rb:82:in `update_stylesheets'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/exec/sass_scss.rb:340:in `watch_or_update'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/exec/sass_scss.rb:51:in `process_result'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/exec/base.rb:52:in `parse'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/lib/sass/exec/base.rb:19:in `parse!'
+D:/ruby/Ruby22-x64/lib/ruby/gems/2.2.0/gems/sass-3.5.4/bin/scss:13:in `<top (required)>'
+D:/ruby/Ruby22-x64/bin/scss:23:in `load'
+D:/ruby/Ruby22-x64/bin/scss:23:in `<main>'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Error: Invalid GBK character \"\xE9\"\A         on line 61 of home.scss\A         from line 1 of index.scss\A \A 56:       }\A 57: \A 58:       &:hover {\A 59:         @media screen and (min-width: $main-width + 1px) {\A 60:           z-index: 100;\A 61:           // 防止内容换行\A 62:           padding-left: 80px;\A 63:           width: calc(100% + 20px);\A 64:         }\A 65:       }\A 66:     }"; }

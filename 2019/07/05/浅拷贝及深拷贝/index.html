@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="Liu Lin">
+  
+  
+  <title>浅拷贝及深拷贝的总结 | 前端</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="js/es6,js es6,">
+  
+
+  
+  <meta name="description" content="blog">
+
+  
+
+  <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"Hyq9wkH495DgNHWhDQCOfQSp-gzGzoHsz","appkey":"WaR7nrzhliHj9aVwdQzkdlGd","comment":false,"count":false},
+    welcome: {"enable":true,"interval":30},
+    start_time: "2019-03-15",
+    passwords: ["efe07af7441da2b69c4a41e42e73be4db47f66010a56900788a458354a7373ec", ],
+    is_post: true,
+    lock: false,
+    author: "Liu Lin",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script>
+
+  <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">liulinblog</a>
+      </span>
+    
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+        <a href="/about/" target="_self">关于</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/liulinmailbox/" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-07-05
+    </span>
+    
+      <span>
+        | <a href="/categories/js-es6/"><i class="fa fa-bookmark"></i>js/es6</a>
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    浅拷贝及深拷贝的总结
+  </h1>
+  
+  <article class="passage-article">
+    <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p><strong>javascript</strong>中一般有按值传递和按引用传递两种复制方式:</p>
+<p><strong>按值传递</strong>的是<strong>基本数据类型</strong>（Number,String,Boolean,Null,Undefined,Symbol），一般存放于内存中的栈区，存取速度快，存放量小；</p>
+<p><strong>按引用传递</strong>的是<strong>引用类型</strong>（Object,Array,Function），一般存放与内存中的堆区，存取速度慢，存放量大，其引用指针存于栈区，并指向引用本身。</p>
+<h4 id="1-浅拷贝"><a href="#1-浅拷贝" class="headerlink" title="1.浅拷贝"></a>1.浅拷贝</h4><blockquote>
+<p>浅拷贝会将对象的每个属性依次进行复制，但是当对象的属性值是引用类型时，实质复制的是对象的引用地址，当引用地址指向的值发生改变时也会跟着变化。</p>
+<p>常见实现浅拷贝的方法：for in、Object.assign、扩展运算符…、Array.prototype.slice()、Array.prototype.concat等</p>
+</blockquote>
+<h5 id="1-for-in实现"><a href="#1-for-in实现" class="headerlink" title="1.for in实现"></a>1.for in实现</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 浅克隆函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">shallowClone</span>(<span class="params">o</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 只拷贝对象</span></span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">typeof</span> o !== <span class="string">'object'</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">const</span> obj = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i <span class="keyword">in</span> o)&#123;</span><br><span class="line">        obj[i] = o[i]</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> oldObj = &#123;</span><br><span class="line">    a:<span class="string">'hello'</span>,</span><br><span class="line">    b:[<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>]</span><br><span class="line">    c:&#123;<span class="attr">j</span>:&#123;<span class="attr">k</span>:<span class="number">1</span>&#125;&#125;，</span><br><span class="line">    d:<span class="literal">true</span>,</span><br><span class="line">    e:<span class="literal">undefined</span>,</span><br><span class="line">    f:<span class="number">1</span>,</span><br><span class="line">    g:<span class="literal">null</span>,</span><br><span class="line">    h:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">       <span class="built_in">console</span>.log(<span class="string">"我是函数"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    i:<span class="built_in">Symbol</span>(<span class="string">"我是symbol"</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> newobj = shallowClone(oldObj);</span><br><span class="line"><span class="built_in">console</span>.log(newobj) </span><br><span class="line"><span class="comment">//基础数据类型是复制的值，而复杂数据类型复制的是引用。</span></span><br></pre></td></tr></table></figure>
+<h5 id="2-Object-assign实现"><a href="#2-Object-assign实现" class="headerlink" title="2.Object.assign实现"></a>2.Object.assign实现</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> oldObj = &#123;</span><br><span class="line">    a:<span class="string">'hello'</span>,</span><br><span class="line">    b:[<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>]</span><br><span class="line">    c:&#123;<span class="attr">d</span>:&#123;<span class="attr">e</span>:<span class="number">1</span>&#125;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> newobj1 = <span class="built_in">Object</span>.assign(&#123;&#125;,oldobj)</span><br><span class="line"><span class="keyword">let</span> newobj2 =&#123;...oldobj)</span><br><span class="line"><span class="built_in">console</span>.log(newobj1)         </span><br><span class="line"><span class="built_in">console</span>.log(newobj2)</span><br></pre></td></tr></table></figure>
+<h4 id="2-深拷贝"><a href="#2-深拷贝" class="headerlink" title="2.深拷贝"></a>2.深拷贝</h4><blockquote>
+<p>深拷贝复制变量值，对于非基本类型的变量，则递归至基本类型变量后，再复制。 深拷贝后的对象与原来的对象是完全隔离的，互不影响，对一个对象的修改并不会影响另一个对象。</p>
+</blockquote>
+<h5 id="2-1-json-parse实现"><a href="#2-1-json-parse实现" class="headerlink" title="2.1 json.parse实现"></a>2.1 json.parse实现</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> newobj = Json.parse(Json.stringify(oldobj))</span><br></pre></td></tr></table></figure>
+<p>虽然json.parse能够实现一些效果，但是他也有缺陷</p>
+<ul>
+<li><p><code>undefined</code>、<code>function</code>、<code>symbol</code> 会在转换过程中被忽略</p>
+</li>
+<li><p>他无法实现对函数 、RegExp、稀疏数组等特殊对象的克隆</p>
+</li>
+<li>会抛弃对象的constructor,所有的构造函数会指向Object</li>
+<li>对象有循环引用,会报错</li>
+</ul>
+<p>所以，接下来我们来实现一个完整的深拷贝实现</p>
+<h5 id="2-2-完整实现"><a href="#2-2-完整实现" class="headerlink" title="2.2 完整实现"></a>2.2 完整实现</h5><p>在这之前，我们先实现一个对象类型判断函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isType</span>(<span class="params">obj, type</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">typeof</span> obj !== <span class="string">'object'</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">const</span> typeString = <span class="built_in">Object</span>.prototype.toString.call(obj); </span><br><span class="line">    <span class="keyword">let</span> flag;</span><br><span class="line">    <span class="keyword">switch</span>(type)&#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'Array'</span>:</span><br><span class="line">            flag = typeString === <span class="string">'Object Array'</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'Date'</span>:</span><br><span class="line">            flag = typeString === <span class="string">'Object Date'</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'RegExp'</span>:</span><br><span class="line">            flag = typeString === <span class="string">'Object RegExp'</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        deault:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> flag;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来实现deepClone函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 深拷贝函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">deepClone</span>(<span class="params">obj, hash = new MapSet(</span>))</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 如果是不是复杂数据类型直接返回</span></span><br><span class="line">    <span class="keyword">if</span>(obj === <span class="literal">null</span> || <span class="keyword">typeof</span> obj !== <span class="string">'Object'</span>) <span class="keyword">return</span> obj;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(isType(obj,<span class="string">'Array'</span>))&#123;</span><br><span class="line">        <span class="comment">// 对数组操作</span></span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(isType(obj,<span class="string">'Date'</span>))&#123;</span><br><span class="line">        <span class="comment">// 对Date进行操作</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Date</span>(obj)</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(isType(obj,<span class="string">'RegExp'</span>))&#123;</span><br><span class="line">        <span class="comment">// 对正则进行操作</span></span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">RegExp</span>(obj)</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="comment">// 处理对象原型</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">   </span><br><span class="line">    <span class="comment">// 处理循环调用</span></span><br><span class="line">    <span class="keyword">if</span>(hash.has(obj))&#123;</span><br><span class="line">        <span class="keyword">return</span> hash.get(obj)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 利用对象的构造函数重新生成一个对象</span></span><br><span class="line">	<span class="keyword">let</span> t = <span class="keyword">new</span> obj.constructor();</span><br><span class="line">	hash.set(obj, t)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i <span class="keyword">in</span> obj)&#123;</span><br><span class="line">    	<span class="keyword">if</span>(obj.hasOwnProperty(i))&#123;</span><br><span class="line">        	t[i] = deepClone(obj[i], hash)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> t </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>以上就是关于浅拷贝深拷贝的总结。</p>
+
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-浅拷贝"><span class="toc-text">1.浅拷贝</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-for-in实现"><span class="toc-text">1.for in实现</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-Object-assign实现"><span class="toc-text">2.Object.assign实现</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-深拷贝"><span class="toc-text">2.深拷贝</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-1-json-parse实现"><span class="toc-text">2.1 json.parse实现</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-完整实现"><span class="toc-text">2.2 完整实现</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+  </div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: 刘林</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://yoursite.com/2019/07/05/浅拷贝及深拷贝/</a>
+        </div>
+      
+      <div>
+        版权声明: 本博客所有文章除特别声明外, 均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议. 转载请注明出处!
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/tags/js-es6/"><i class="fa fa-tags"></i>js es6</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title">博客推荐</h5>
+        
+          <span class="site-footer-item">
+            <a href="https://godbmw.com/" target="_blank">GodBMW</a>
+          </span>
+        
+          <span class="site-footer-item">
+            <a href="http://ruanyifeng.com/" target="_blank">阮一峰的个人网站</a>
+          </span>
+        
+      </div>
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title">系列教程</h5>
+        
+          <span class="site-footer-item">
+            <a href="https://godbmw.com/categories/webpack4%E7%B3%BB%E5%88%97%E6%95%99%E7%A8%8B/" target="_blank">webpack4系列教程</a>
+          </span>
+        
+          <span class="site-footer-item">
+            <a href="https://godbmw.com/design-patterns/" target="_blank">设计模式手册</a>
+          </span>
+        
+      </div>
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title">抓到我</h5>
+        
+          <span class="site-footer-item">
+            <a href="https://juejin.im/user/5b91fcf06fb9a05d3c7fd4a5" target="_blank">掘金</a>
+          </span>
+        
+          <span class="site-footer-item">
+            <a href="https://segmentfault.com/" target="_blank">思否</a>
+          </span>
+        
+      </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    
+      <div class="site-footer-info">
+        <i class="fa fa-at"></i> Email: yuanxin.me@gmail.com
+      </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i> 
+      2019 <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>.
+      Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/touch-icon.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/touch-icon.png" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>
